@@ -2,13 +2,14 @@ import { UserModel } from "../models/mongoose/user";
 import { UserPublic } from "../models/userinterfaces";
 import { UserDAO } from "../daos/userdao";
 import { connect } from "../database/mongo/mongo";
+import { Login } from "../models/logininterfaces";
 
 export class MongoService extends UserDAO {
     connectDatabase(): void {
         connect();
     }
 
-    async addUser(user: object): Promise<UserPublic> {
+    async addUser(user: object): Promise<Login> {
         try {
             const newUser = new UserModel(user);
             const result = await newUser.save();
@@ -17,7 +18,10 @@ export class MongoService extends UserDAO {
                 name: newUser.name,
                 email: newUser.email,
             };
-            return userPublic;
+            
+            return {
+                user: userPublic, token
+            };
         } catch (e) {
             throw e;
         }
