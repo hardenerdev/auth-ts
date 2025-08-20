@@ -2,7 +2,6 @@ import { UserModel } from "../models/mongoose/user";
 import { UserPublic } from "../models/userinterfaces";
 import { UserDAO } from "../daos/userdao";
 import { connect } from "../database/mongo/mongo";
-import { userRouter } from "../routes/user.route";
 
 export class MongoService extends UserDAO {
     connectDatabase(): void {
@@ -13,6 +12,7 @@ export class MongoService extends UserDAO {
         try {
             const newUser = new UserModel(user);
             const result = await newUser.save();
+            const token = await result.generateToken();
             const userPublic: UserPublic = {
                 name: newUser.name,
                 email: newUser.email,
