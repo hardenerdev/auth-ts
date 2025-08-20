@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import { userRouter } from './routes/user.route';
-import { MongoUserDAO } from './daos/impl/mongo/mongodao';
+import { MongoService } from './services/user.service';
 
-const mongoUserDAO = new MongoUserDAO();
+const mongoUserDAO = new MongoService();
 mongoUserDAO.connectDatabase();
 
 export const app = express();

@@ -5,7 +5,7 @@ import {
 export abstract class UserDAO {
     abstract connectDatabase(): void;
 
-    // abstract addUser(): UserPublic;
+    abstract addUser(user: object): Promise<UserPublic>;
     // abstract getUser(): UserPublic;
     // abstract updateUser(): UserPublic;
     // abstract deleteUser(): UserPublic;
