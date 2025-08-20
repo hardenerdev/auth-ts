@@ -2,6 +2,7 @@ import { UserModel } from "../models/mongoose/user";
 import { UserPublic } from "../models/userinterfaces";
 import { UserDAO } from "../daos/userdao";
 import { connect } from "../database/mongo/mongo";
+import { userRouter } from "../routes/user.route";
 
 export class MongoService extends UserDAO {
     connectDatabase(): void {
@@ -21,4 +22,26 @@ export class MongoService extends UserDAO {
             throw e;
         }
     }
+
+    async getUser(email: string): Promise<UserPublic> {
+        const user = await UserModel.findOne({ email: email });
+        
+        if (!user) {
+            throw new Error('user not found');
+        } else {
+            const userPublic: UserPublic = {
+                name: user.name,
+                email: user.email,
+            };
+
+            return userPublic;
+        }
+    }
+
+    // abstract updateUser(): UserPublic;
+    // abstract deleteUser(): UserPublic;
+
+    // abstract login(): UserPublic;
+    // abstract logout(): UserPublic;
+    // abstract logoutAll(): UserPublic;
 }
