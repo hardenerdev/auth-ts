@@ -63,7 +63,24 @@ export class MongoService extends UserDAO {
         }
     }
 
-    // abstract deleteUser(): UserPublic;
+    async deleteUser(user: User): Promise<UserPublic> {
+        try {
+            const deletedUser = await UserModel.findByIdAndDelete(user);
+
+            if (!deletedUser) {
+                throw Error();
+            }
+
+            const userPublic: UserPublic = {
+                name: deletedUser.name,
+                email: deletedUser.email,
+            };
+
+            return userPublic;
+        } catch (e) {
+            throw e;
+        }
+    }
 
     // abstract login(): UserPublic;
     // abstract logout(): UserPublic;

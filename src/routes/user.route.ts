@@ -2,7 +2,8 @@ import express from 'express';
 import {
     addUser,
     getUser,
-    updateUser
+    updateUser,
+    deleteUser
 } from '../controllers/user.controller';
 import { checkAuthentication } from '../middleware/authentication.middleware';
 
@@ -13,3 +14,5 @@ userRouter.post("/users", addUser);
 userRouter.get("/users/user", checkAuthentication, getUser);
 // @ts-ignore
 userRouter.patch("/users/user", checkAuthentication, updateUser);
+// @ts-ignore
+userRouter.delete("/users/user", checkAuthentication, deleteUser);
