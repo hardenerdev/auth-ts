@@ -80,4 +80,19 @@ userSchema.methods.generateToken = async function () {
     return token;
 };
 
+// tojson - not showing private info
+userSchema.methods.publicInformation = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject._id;
+  delete userObject.__v;
+  delete userObject.password;
+  delete userObject.tokens;
+  delete userObject.createdAt;
+  delete userObject.updatedAt;
+
+  return userObject;
+};
+
 export const UserModel = mongoose.model('User', userSchema);

@@ -5,6 +5,7 @@ export interface User {
     tokens: string[];
 
     generateToken(): string;
+    publicInformation(): object;
 };
 
 export interface UserPublic {
