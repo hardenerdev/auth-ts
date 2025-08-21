@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { UserModel } from "../models/mongoose/user";
 import { UserPublic } from "../models/userinterfaces";
 import { UserDAO } from "../daos/userdao";
@@ -27,18 +28,24 @@ export class MongoService extends UserDAO {
         }
     }
 
-    async getUser(email: string): Promise<UserPublic> {
-        const user = await UserModel.findOne({ email: email });
-        
-        if (!user) {
-            throw new Error('user not found');
-        } else {
-            const userPublic: UserPublic = {
-                name: user.name,
-                email: user.email,
-            };
+    async getUser(decoded: jwt.JwtPayload, token: string): Promise<UserPublic> {
+        try {
+            const user = await UserModel.findOne({
+                _id: decoded._id, 'tokens.token': token
+            });
+            
+            if (!user) {
+                throw new Error('user not found');
+            } else {
+                const userPublic: UserPublic = {
+                    name: user.name,
+                    email: user.email,
+                };
 
-            return userPublic;
+                return userPublic;
+            }
+        } catch (e) {
+            throw e;
         }
     }
 

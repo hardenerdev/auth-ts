@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import {
     UserPublic,
 } from "../models/userinterfaces";
@@ -7,7 +8,7 @@ export abstract class UserDAO {
     abstract connectDatabase(): void;
 
     abstract addUser(user: object): Promise<Login>;
-    abstract getUser(email: string): Promise<UserPublic>;
+    abstract getUser(decoded: jwt.JwtPayload, token: string): Promise<UserPublic>;
     // abstract updateUser(): UserPublic;
     // abstract deleteUser(): UserPublic;
 

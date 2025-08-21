@@ -3,8 +3,10 @@ import {
     addUser,
     getUser
 } from '../controllers/user.controller';
+import { checkAuthentication } from '../middleware/authentication';
 
 export const userRouter = express.Router();
 
 userRouter.post("/users", addUser);
-userRouter.get("/users/user", getUser);
+// @ts-ignore
+userRouter.get("/users/user", checkAuthentication, getUser);
