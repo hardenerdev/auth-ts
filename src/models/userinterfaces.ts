@@ -6,6 +6,8 @@ export interface User {
 
     generateToken(): string;
     publicInformation(): object;
+
+    findByCredentials(credentials: object): Promise<User>;
 };
 
 export interface UserPublic {

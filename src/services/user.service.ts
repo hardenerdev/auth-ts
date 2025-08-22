@@ -82,7 +82,16 @@ export class MongoService extends UserDAO {
         }
     }
 
-    // abstract login(): UserPublic;
+    async loginUser(credentials: object): Promise<[User, string]> {
+        try {
+            const user = await UserModel.findByCredentials(credentials);
+            const token = await user.generateToken();
+            return [user, token];
+        } catch (e) {
+            throw e;
+        }
+    }
+
     // abstract logout(): UserPublic;
     // abstract logoutAll(): UserPublic;
 }

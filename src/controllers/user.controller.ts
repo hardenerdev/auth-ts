@@ -42,3 +42,13 @@ export const deleteUser = async (req: ExtendedRequest, res: Response) => {
         res.status(500).send();
     }
 };
+
+export const loginUser = async (req: Request, res: Response) => {
+    try {
+        const [user, token] = await mongoService.loginUser(req.body);
+        const userPublic = user.publicInformation();
+        res.status(200).send({ userPublic, token });
+    } catch (e) {
+        res.status(500).send();
+    }
+};

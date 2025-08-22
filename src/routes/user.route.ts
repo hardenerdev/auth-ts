@@ -3,7 +3,8 @@ import {
     addUser,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 } from '../controllers/user.controller';
 import { checkAuthentication } from '../middleware/authentication.middleware';
 
@@ -16,3 +17,4 @@ userRouter.get("/users/user", checkAuthentication, getUser);
 userRouter.patch("/users/user", checkAuthentication, updateUser);
 // @ts-ignore
 userRouter.delete("/users/user", checkAuthentication, deleteUser);
+userRouter.post("/users/login", loginUser);

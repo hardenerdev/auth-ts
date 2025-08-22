@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -8,9 +8,12 @@ import {
 import bcryptConfig from '../../config/bcrypt.config';
 import jwtConfig from '../../config/jwt.config';
 
-interface UserDocument extends User, mongoose.Document {};
+interface UserDocument extends User, mongoose.Document { };
+interface UserModelType extends Model<UserDocument> {
+  findByCredentials(credentials: object): Promise<User>;
+}
 
-const userSchema = new mongoose.Schema<UserDocument>({
+const userSchema = new mongoose.Schema<UserDocument, UserModelType>({
     name: {
         type: String,
         required: true,
@@ -22,7 +25,7 @@ const userSchema = new mongoose.Schema<UserDocument>({
         trim: true,
         unique: true,
         lowercase: true,
-        validate (value: string) {
+        validate(value: string) {
             if (!validator.isEmail(value)) {
                 throw Error("Email is not a valid email");
             }
@@ -49,7 +52,7 @@ const userSchema = new mongoose.Schema<UserDocument>({
 /**
  * pre-save middleware to hash passworn
  */
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
     const user = this;
 
     if (user.isModified('password')) {
@@ -69,7 +72,7 @@ userSchema.methods.generateToken = async function () {
     const user = this;
 
     const token = jwt.sign(
-        { _id: user._id.toString()},
+        { _id: user._id.toString() },
         jwtConfig.secret,
         { expiresIn: '2h' }
     );
@@ -80,19 +83,41 @@ userSchema.methods.generateToken = async function () {
     return token;
 };
 
-// tojson - not showing private info
+/**
+ * instance method to publish only public information
+ */
 userSchema.methods.publicInformation = function () {
-  const user = this;
-  const userObject = user.toObject();
+    const user = this;
+    const userObject = user.toObject();
 
-  delete userObject._id;
-  delete userObject.__v;
-  delete userObject.password;
-  delete userObject.tokens;
-  delete userObject.createdAt;
-  delete userObject.updatedAt;
+    delete userObject._id;
+    delete userObject.__v;
+    delete userObject.password;
+    delete userObject.tokens;
+    delete userObject.createdAt;
+    delete userObject.updatedAt;
 
-  return userObject;
+    return userObject;
 };
 
-export const UserModel = mongoose.model('User', userSchema);
+userSchema.static('findByCredentials', async function findByCredentials(credentials): Promise<User> {
+    const email = credentials.email;
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+        throw new Error('invalid email');
+    }
+
+    const passwordMatch = await bcrypt.compare(
+        credentials.password,
+        user.password
+    );
+
+    if (!passwordMatch) {
+        throw new Error('invalid password');
+    }
+
+    return user;
+})
+
+export const UserModel = mongoose.model<UserDocument, UserModelType>('User', userSchema);
