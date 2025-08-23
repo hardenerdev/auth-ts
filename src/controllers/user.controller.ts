@@ -52,3 +52,13 @@ export const loginUser = async (req: Request, res: Response) => {
         res.status(500).send();
     }
 };
+
+export const logoutUser = async (req: ExtendedRequest, res: Response) => {
+    try {
+        const user = await mongoService.logoutUser(req.user as User, req.token);
+        const userPublic = user.publicInformation();
+        res.status(200).send({ userPublic });
+    } catch (e) {
+        res.status(500).send();
+    }
+};

@@ -92,6 +92,19 @@ export class MongoService extends UserDAO {
         }
     }
 
-    // abstract logout(): UserPublic;
+    async logoutUser(user: User, token: string): Promise<User> {
+        try {
+            const logoutUser = new UserModel(user);
+            logoutUser.tokens = logoutUser.tokens.filter((item: any) => {
+                return token !== item.token;
+            });
+            await logoutUser.save();
+
+            return logoutUser;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     // abstract logoutAll(): UserPublic;
 }

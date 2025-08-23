@@ -13,6 +13,6 @@ export abstract class UserDAO {
     abstract updateUser(user: User, updates: object): Promise<UserPublic>;
     abstract deleteUser(user: User): Promise<UserPublic>;
     abstract loginUser(user: User): Promise<[User, string]>;
-    // abstract logout(): UserPublic;
+    abstract logoutUser(user: User, token: string): Promise<User>;
     // abstract logoutAll(): UserPublic;
 }
