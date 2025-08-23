@@ -12,7 +12,7 @@ export abstract class UserDAO {
     abstract getUser(decoded: jwt.JwtPayload, token: string): Promise<UserPublic>;
     abstract updateUser(user: User, updates: object): Promise<UserPublic>;
     abstract deleteUser(user: User): Promise<UserPublic>;
-    abstract loginUser(user: User): Promise<[User, string]>;
+    abstract loginUser(user: any): Promise<[User, string]>;
     abstract logoutUser(user: User, token: string): Promise<User>;
-    // abstract logoutAll(): UserPublic;
+    abstract logoutAllUser(user: User, token: string): Promise<User>;
 }

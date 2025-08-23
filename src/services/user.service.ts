@@ -92,15 +92,25 @@ export class MongoService extends UserDAO {
         }
     }
 
-    async logoutUser(user: User, token: string): Promise<User> {
+    async logoutUser(user: any, token: string): Promise<User> {
         try {
-            const logoutUser = new UserModel(user);
-            logoutUser.tokens = logoutUser.tokens.filter((item: any) => {
+            user.tokens = user.tokens.filter((item: any) => {
                 return token !== item.token;
             });
-            await logoutUser.save();
+            await user.save();
 
-            return logoutUser;
+            return user;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async logoutAllUser(user: any, token: string): Promise<User> {
+        try {
+            user.tokens = [];
+            await user.save();
+
+            return user;
         } catch (e) {
             throw e;
         }

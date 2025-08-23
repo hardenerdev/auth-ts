@@ -5,7 +5,8 @@ import {
     updateUser,
     deleteUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    logoutAllUser
 } from '../controllers/user.controller';
 import { checkAuthentication } from '../middleware/authentication.middleware';
 
@@ -21,3 +22,5 @@ userRouter.delete("/users/user", checkAuthentication, deleteUser);
 userRouter.post("/users/login", loginUser);
 // @ts-ignore
 userRouter.post("/users/logout", checkAuthentication, logoutUser);
+// @ts-ignore
+userRouter.post("/users/logoutAll", checkAuthentication, logoutAllUser);
